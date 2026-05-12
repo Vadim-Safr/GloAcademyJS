@@ -12,18 +12,37 @@ let fullPrice = screenPrice + servicePrice1 + servicePrice2;
 let rollback = fullPrice * (2 / 100); // откат посреднику в 2%
 let servicePercentPrice = Math.ceil(fullPrice - rollback);
 
+const showTypeOf = function (variable) {
+    console.log(variable, typeof variable);
+}
+
+const getRollbackMessage = function (price) {
+    switch (true) {
+        case price >= 30000:
+            return "Даем скидку в 10%"
+            break
+        case price >= 15000 && price < 30000:
+            return "Даем скидку в 5%"
+            break
+        case price < 15000 && price > 0:
+            return "Скидка не предусмотрена"
+            break
+        default:
+            return "Что то пошло не так"
+    }
+}
+
+showTypeOf(title)
+showTypeOf(fullPrice)
+showTypeOf(adaptive)
+
+console.log(getRollbackMessage(fullPrice));
+console.log(typeof title);
+console.log(typeof fullPrice);
+console.log(typeof adaptive);
+
+console.log(screens.length);
 console.log("Итоговая стоимость за вычетом отката посреднику:", servicePercentPrice);
 
-switch (true) {
-    case fullPrice >= 30000:
-        console.log("Даем скидку в 10%");
-        break
-    case fullPrice >= 15000 && fullPrice < 30000:
-        console.log("Даем скидку в 5%");
-        break
-    case fullPrice < 15000 && fullPrice > 0:
-        console.log("Скидка не предусмотрена");
-        break
-    default:
-        console.log("Что то пошло не так");
-}
+console.log("Стоимость верстки экранов " + screenPrice + " рублей/долларов/гривен/юани");
+console.log("Стоимость разработки сайта " + fullPrice + "  рублей/долларов/гривен/юани");
