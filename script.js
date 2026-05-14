@@ -1,22 +1,49 @@
 'use strict';
 
-let title = prompt("Как называется наш проект?").trim();
-let screens = prompt("Какие типы экранов нужно разработать?", "Простые, Сложные, Интерактивные");
-let screenPrice = +prompt("Сколько будет стоить данная работа?", 12000);
-let adaptive = confirm("Нужен ли адаптив на сайте?");
-let service1 = prompt("Какой дополнительный тип услуги нужен?");
-let servicePrice1 = +prompt("Сколько это будет стоить?");
-let service2 = prompt("Какой дополнительный тип услуги нужен?");
-let servicePrice2 = +prompt("Сколько это будет стоить?");
+let rollback = 2;
+let title, screens, screenPrice, adaptive, service1, service2, allServicePrices, fullPrice, servicePercentPrice;
 
-let allServicePrices, fullPrice, servicePercentPrice;
+const isNumber = function (num) {
+    return !isNaN(parseFloat(num)) && isFinite(num) // parseFloat возвращает NaN если первый символ не число, isFinite проверяет, является ли занчение конечным числом
+}
+
+const asking = function () {
+    title = prompt("Как называется наш проект?", "Калькулятор верстки");
+    screens = prompt("Какие типы экранов нужно разработать?", "Простые, Сложные, Интерактивные");
+
+    do {
+        screenPrice = prompt("Сколько будет стоить данная работа?");
+    } while (!isNumber(screenPrice))
+
+    screenPrice = +screenPrice
+
+    adaptive = confirm("Нужен ли адаптив на сайте?");
+}
 
 const getTitle = function () {
-    return title[0].toUpperCase() + title.slice(1).toLowerCase()
+    return title.trim()[0].toUpperCase() + title.trim().slice(1).toLowerCase()
 }
 
 const getAllServicePrices = function () {
-    return servicePrice1 + servicePrice2
+    let num;
+    let sum = 0;
+
+    for (let i = 0; i < 2; i++) {
+
+        if (i === 0) {
+            service1 = prompt("Какой дополнительный тип услуги нужен?");
+        } else if (i === 1) {
+            service2 = prompt("Какой дополнительный тип услуги нужен?");
+        }
+
+        do {
+            num = prompt("Сколько будет стоить данная работа?");
+        } while (!isNumber(num))
+
+        sum += +num
+    }
+
+    return sum
 }
 
 function getFullPrice() {
@@ -24,7 +51,7 @@ function getFullPrice() {
 }
 
 const getServicePercentPrices = function () {
-    return Math.ceil(fullPrice - fullPrice * (2 / 100))
+    return fullPrice - fullPrice * (rollback / 100)
 }
 
 const showTypeOf = function (variable) {
@@ -44,6 +71,7 @@ const getRollbackMessage = function (price) {
     }
 }
 
+asking()
 title = getTitle()
 allServicePrices = getAllServicePrices()
 fullPrice = getFullPrice()
