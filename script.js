@@ -25,13 +25,12 @@ const appData = {
         return isNaN(cleanStr) && cleanStr !== ''
     },
     asking: () => {
-        let name;
-
         do {
             appData.title = prompt("Как называется наш проект?", "Калькулятор верстки") || "";
         } while (!appData.isString(appData.title))
 
         for (let i = 0; i < 2; i++) {
+            let name;
             let price = 0;
             do {
                 name = prompt("Какие типы экранов нужно разработать?");
@@ -45,7 +44,9 @@ const appData = {
         }
 
         for (let i = 0; i < 2; i++) {
+            let name;
             let price = 0;
+
             do {
                 name = prompt("Какой дополнительный тип услуги нужен?");
             } while (!appData.isString(name))
@@ -54,15 +55,19 @@ const appData = {
                 price = prompt("Сколько будет стоить данная работа?");
             } while (!appData.isNumber(price))
 
+            if (name in appData.services) {
+                name = `${name} ${i + 1}`
+            }
+
             appData.services[name] = +price
         }
 
         appData.adaptive = confirm("Нужен ли адаптив на сайте?");
     },
     addPrices: () => {
-        for (let screen of appData.screens) {
-            appData.screenPrice += +screen.price
-        }
+        appData.screenPrice = appData.screens.reduce((sum, item) => {
+            return sum + Number(item.price)
+        }, 0)
 
         for (let key in appData.services) {
             appData.allServicePrices += appData.services[key]
@@ -94,6 +99,7 @@ const appData = {
         console.log(appData.getRollbackMessage(appData.fullPrice))
         console.log(appData.servicePercentPrice)
         console.log(appData.screens)
+        console.log(appData.services)
     },
     start: () => {
         appData.asking()
