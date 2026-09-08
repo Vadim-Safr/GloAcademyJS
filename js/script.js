@@ -1,5 +1,16 @@
 'use strict';
 
+const pageTitle = document.getElementsByTagName('h1')[0]
+const pageBtnStart = document.getElementsByClassName('handler_btn')[0]
+const pageBtnReset = document.getElementsByClassName('handler_btn')[1]
+const pageBtnAdd = document.querySelector('.screen-btn')
+const otherPercent = document.querySelectorAll('.other-items.percent')
+const otherNumbers = document.querySelectorAll('.other-items.number')
+const pageRollbackInput = document.querySelector('.rollback input[type="range"]')
+const pageRollbackSpan = document.querySelector('.rollback .range-value')
+const pageTotal = [...document.getElementsByClassName('total-input')]
+let pageScreen = document.querySelectorAll('.screen')
+
 const appData = {
     title: '',
     screens: [],
@@ -113,4 +124,4 @@ const appData = {
     }
 }
 
-appData.start() 
+//appData.start()
