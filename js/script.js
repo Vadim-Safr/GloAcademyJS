@@ -1,127 +1,81 @@
 'use strict';
 
-const pageTitle = document.getElementsByTagName('h1')[0]
-const pageBtnStart = document.getElementsByClassName('handler_btn')[0]
-const pageBtnReset = document.getElementsByClassName('handler_btn')[1]
-const pageBtnAdd = document.querySelector('.screen-btn')
-const otherPercent = document.querySelectorAll('.other-items.percent')
-const otherNumbers = document.querySelectorAll('.other-items.number')
-const pageRollbackInput = document.querySelector('.rollback input[type="range"]')
-const pageRollbackSpan = document.querySelector('.rollback .range-value')
-const pageTotal = [...document.getElementsByClassName('total-input')]
-let pageScreen = document.querySelectorAll('.screen')
+const bookList = document.querySelectorAll('.book')
+const bgImage = document.querySelector('body')
+const bookText = bookList[4].querySelector('a')
+const adBanner = document.querySelector('.adv')
 
-const appData = {
-    title: '',
-    screens: [],
-    screenPrice: 0,
-    adaptive: true,
-    rollback: 10,
-    services: {},
-    allServicePrices: 0,
-    fullPrice: 0,
-    servicePercentPrice: 0,
-    isNumber: (num) => {
-        if (num === null) {
-            return false
+const book2 = bookList[0].querySelectorAll('li')
+const book5 = bookList[5].querySelectorAll('li')
+const book6 = bookList[2].querySelectorAll('li')
+
+// добавление главы
+const newElem = document.createElement('li')
+newElem.textContent = 'Глава 8: За пределами ES6'
+book6[book6.length - 1].after(newElem)
+
+// восстановление порядка книг
+bookList[1].after(bookList[0])
+bookList[5].after(bookList[2])
+bookList[4].after(bookList[3])
+
+// замена заднего фона
+bgImage.style.backgroundImage = 'url(./image/you-dont-know-js.jpg)'
+
+// исправление опечатки
+bookText.textContent = bookText.textContent.replaceAll('Пропопипы', 'Прототипы')
+
+//удаление рекламы
+adBanner.remove()
+
+//сортировка глав в книгах
+const chapterSorter = (book) => {
+    let startOrigin;
+    let chapterNumber = [];
+    let appendixList = [];
+
+    const addElement = (list) => {
+        for (let elem = 0; elem < list.length; elem++) {
+            currentPlace.after(list[elem])
+            currentPlace = list[elem]
         }
-        return !isNaN(parseFloat(num)) && isFinite(num) // parseFloat возвращает NaN если первый символ не число, isFinite проверяет, является ли значение конечным числом
-    },
-    isString: (str) => {
-        if (str === null) {
-            return false
-        }
+    }
 
-        const cleanStr = str.replaceAll(' ', '')
-        return isNaN(cleanStr) && cleanStr !== ''
-    },
-    asking: () => {
-        do {
-            appData.title = prompt("Как называется наш проект?", "Калькулятор верстки") || "";
-        } while (!appData.isString(appData.title))
-
-        for (let i = 0; i < 2; i++) {
-            let name;
-            let price = 0;
-            do {
-                name = prompt("Какие типы экранов нужно разработать?");
-            } while (!appData.isString(name))
-
-            do {
-                price = prompt("Сколько будет стоить данная работа?");
-            } while (!appData.isNumber(price))
-
-            appData.screens.push({ id: i, name: name, price: price })
-        }
-
-        for (let i = 0; i < 2; i++) {
-            let name;
-            let price = 0;
-
-            do {
-                name = prompt("Какой дополнительный тип услуги нужен?");
-            } while (!appData.isString(name))
-
-            do {
-                price = prompt("Сколько будет стоить данная работа?");
-            } while (!appData.isNumber(price))
-
-            if (name in appData.services) {
-                name = `${name} ${i + 1}`
+    for (let chapter = 0; chapter < book.length; chapter++) {
+        for (let i = 0; i < book.length; i++) {
+            if (book[chapter].textContent.includes(`Глава ${i}`)) {
+                chapterNumber.push(book[chapter])
+                if (i === 1) {
+                    startOrigin = chapter
+                }
+                break
             }
 
-            appData.services[name] = +price
+            if (/Приложение [A-Z]/.test(book[chapter].textContent) && !appendixList.includes(book[chapter])) {
+                appendixList.push(book[chapter])
+            }
         }
-
-        appData.adaptive = confirm("Нужен ли адаптив на сайте?");
-    },
-    addPrices: () => {
-        appData.screenPrice = appData.screens.reduce((sum, item) => {
-            return sum + Number(item.price)
-        }, 0)
-
-        for (let key in appData.services) {
-            appData.allServicePrices += appData.services[key]
-        }
-    },
-    getTitle: () => {
-        appData.title = appData.title.trim()[0].toUpperCase() + appData.title.trim().slice(1).toLowerCase()
-    },
-    getFullPrice: () => {
-        appData.fullPrice = appData.screenPrice + appData.allServicePrices
-    },
-    getServicePercentPrices: () => {
-        appData.servicePercentPrice = appData.fullPrice - appData.fullPrice * (appData.rollback / 100)
-    },
-    getRollbackMessage: (price) => {
-        switch (true) {
-            case price >= 30000:
-                return "Даем скидку в 10%"
-            case price >= 15000 && price < 30000:
-                return "Даем скидку в 5%"
-            case price < 15000 && price > 0:
-                return "Скидка не предусмотрена"
-            default:
-                return "Что то пошло не так"
-        }
-    },
-    logger: () => {
-        console.log(appData.fullPrice)
-        console.log(appData.getRollbackMessage(appData.fullPrice))
-        console.log(appData.servicePercentPrice)
-        console.log(appData.screens)
-        console.log(appData.services)
-    },
-    start: () => {
-        appData.asking()
-        appData.addPrices()
-
-        appData.getTitle()
-        appData.getFullPrice()
-        appData.getServicePercentPrices()
-
-        appData.logger()
     }
+
+    chapterNumber.sort((a, b) => {
+        const chap1 = parseInt(a.textContent.match(/\d+/))
+        const chap2 = parseInt(b.textContent.match(/\d+/))
+
+        return chap1 - chap2
+    })
+
+    appendixList.sort((a, b) => {
+        const lett1 = a.textContent.match(/Приложение ([A-Z])/)[1]
+        const lett2 = b.textContent.match(/Приложение ([A-Z])/)[1]
+
+        return lett1.localeCompare(lett2);
+    })
+
+    let currentPlace = book[startOrigin];
+
+    addElement(chapterNumber)
+    addElement(appendixList)
 }
 
-//appData.start()
+chapterSorter(book2)
+chapterSorter(book5)
